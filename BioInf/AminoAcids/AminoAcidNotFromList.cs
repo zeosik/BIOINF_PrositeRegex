@@ -1,8 +1,10 @@
-﻿namespace BioInf.AminoAcids
+﻿using System.Collections.Generic;
+
+namespace BioInf.AminoAcids
 {
     public class AminoAcidNotFromList : AminoAcidFromList
     {
-        public AminoAcidNotFromList(char[] list) : base(list)
+        public AminoAcidNotFromList(IEnumerable<char> list) : base(list)
         {
         }
         public override bool accept(char c)

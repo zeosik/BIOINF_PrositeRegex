@@ -20,12 +20,12 @@ namespace BioInf
             if (str.StartsWith("["))
             {
                 var i = str.IndexOf("]");
-                return new RepeatedAcid(new AminoAcidFromList(str.Substring(1, i - 1).ToCharArray()), str.Substring(i + 1));
+                return new RepeatedAcid(new AminoAcidFromList(str.Substring(1, i - 1)), str.Substring(i + 1));
             }
             if (str.StartsWith("{"))
             {
                 var i = str.IndexOf("}");
-                return new RepeatedAcid(new AminoAcidNotFromList(str.Substring(1, i - 1).ToCharArray()), str.Substring(i + 1));
+                return new RepeatedAcid(new AminoAcidNotFromList(str.Substring(1, i - 1)), str.Substring(i + 1));
             }
             if (str.StartsWith("x"))
             {

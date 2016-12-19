@@ -7,7 +7,7 @@ namespace BioInf.AminoAcids
     {
         protected List<char> list;
 
-        public AminoAcidFromList(char[] list)
+        public AminoAcidFromList(IEnumerable<char> list)
         {
             this.list = list.ToList();
         }
