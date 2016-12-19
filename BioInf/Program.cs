@@ -15,11 +15,14 @@ namespace BioInf
     {
         static void Main(string[] args)
         {
-            var regex = "x";
-            //var regex = "[AB](1,2)-[AB](1,2)";
-            var str = "AB|ABB|AAB|AABB";
-            var r = PrositeRegex.find(regex, str);
-            Console.WriteLine(r);
+            var regex = "[RK]-G-{EDRKHPCG}-[AGSCI]-[FY]-[LIVA]-x-[FYM]";
+            var str1 = "SRSLKMRGQAFVIFKEVSSAT";
+            var str2 = "KLTGRPRGVAFVRYNKREEAQ";
+            var str3 = "VGCSVHKGFAFVQYVNERNAR";
+            var r = new PrositeRegex(regex);
+            Console.WriteLine(r.find(str1));
+            Console.WriteLine(r.find(str2));
+            Console.WriteLine(r.find(str3));
             Console.ReadLine();
         }
     }
@@ -42,7 +45,7 @@ namespace BioInf
             return new PrositeRegex(regex).find(str);
         }
 
-        private PrositeRegexResults find(string str)
+        public PrositeRegexResults find(string str)
         {
             return new PrositeRegexResults(str, matches(str).ToList());
         }
