@@ -15,14 +15,11 @@ namespace BioInf
 
         public bool match(string str)
         {
-            for (int i = 0; i < list.Count; i++)
+            if (str.Length < list.Count)
             {
-                if (!(i < str.Length && list[i].accept(str[i])))
-                {
-                    return false;
-                }
+                return false;
             }
-            return true;
+            return !list.Where((t, i) => !t.accept(str[i])).Any();
         }
 
         public AcidSequence add(AcidSequence other)

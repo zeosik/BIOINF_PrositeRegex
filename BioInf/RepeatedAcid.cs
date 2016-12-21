@@ -49,7 +49,7 @@ namespace BioInf
                 }
                 else // "(1)"
                 {
-                    to = from = int.Parse(times);
+                    to = from = int.Parse(withoutBrackets);
                 }
             }
             else //""
