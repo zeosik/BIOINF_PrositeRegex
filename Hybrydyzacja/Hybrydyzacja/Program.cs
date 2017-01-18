@@ -24,9 +24,17 @@ namespace Hybrydyzacja
 
         static void Main(string[] args)
         {
-            var g = new Graph(_sampleWords.ToList(), 3);
+            var list = Generator.GenerateSomeData(3, 7);
+
+            foreach (var str in list)
+            {
+                Console.WriteLine(str);
+            }
+
+            var g = new Graph(list, 3);
             g.Print();
             g.FindEulerPath();
+
             Console.Read();
         }
     }
