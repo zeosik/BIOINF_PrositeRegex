@@ -24,8 +24,9 @@ namespace Hybrydyzacja
 
         static void Main(string[] args)
         {
-            var sample = Generator.GenerateSomeData(4, 12);
-            var g = new Graph(sample, 4);
+            var sample = Generator.CorruptedExample();
+            //var sample = Generator.GenerateSomeData(3, 8);
+            var g = new Graph(sample, 3);
             g.Print();
             g.FindEulerPath();
             Console.Read();

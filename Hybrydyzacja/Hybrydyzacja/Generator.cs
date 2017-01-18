@@ -8,6 +8,12 @@ namespace Hybrydyzacja
 {
     class Generator
     {
+        public static List<string> CorruptedExample()
+        {
+            string[] exaple = {"TCA", "CAT", "ATG", "TGG", "GGT", "GTA", "CAG"};
+            return exaple.ToList();
+        }
+
         public static List<string> GenerateSomeData(int k, int length)
         {
             char[] letters = { 'A', 'C', 'G', 'T' };
