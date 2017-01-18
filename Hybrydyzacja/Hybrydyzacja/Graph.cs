@@ -9,7 +9,7 @@ namespace Hybrydyzacja
     class Graph
     {
         private char[] _alphabet = {'A', 'C', 'G', 'T'};
-
+        private List<string> _words;
         public List<Vertex> Vertices { get; set; }
         public Vertex StartVertex { get; set; }
         public Vertex EndVertex { get; set; }
@@ -21,7 +21,9 @@ namespace Hybrydyzacja
 
         public Graph(List<string> words, int k)
         {
-            BuildGraph(words, k);
+            _words = words;
+            this.k = k;
+            BuildGraph(words);
         }
 
         public bool ContainsVertex(string value)
@@ -72,11 +74,12 @@ namespace Hybrydyzacja
 
         public void FindEulerPath()
         {
-            if (EulerCycleExists())
+            var g = new Graph(_words, k);
+            if (g.EulerCycleExists())
             {
-                StartVertex = Vertices[0];
+                g.StartVertex = Vertices[0];
             }
-            else if (!EulerPathExists())
+            else if (!g.EulerPathExists())
             {
                 _solutionExists = false;
                 Console.WriteLine("No solution");
@@ -84,24 +87,28 @@ namespace Hybrydyzacja
             }
             _solutionExists = true;
             var path = new List<Edge>();
-            var currentVertex = StartVertex;
+            var currentVertex = g.StartVertex;
             while (currentVertex.Edges.Any())
             {
                 var nextVertex = currentVertex.Edges[0].To;
                 path.Add(currentVertex.Edges[0]);
                 currentVertex.Edges.RemoveAt(0);
-                Edges--;
+                g.Edges--;
                 currentVertex = nextVertex;
             }
-            if (Edges > 0)
+            if (g.Edges > 0)
             {
-                AppendCycles(path);
+                g.AppendCycles(path);
             }
+            Console.Write("Rozwiązanie: ");
             Console.Write(path[0].From.Value);
             foreach (var edge in path)
             {
                 Console.Write(edge.Value);
             }
+            Console.WriteLine();
+            HandleNegativeErrors(1);
+            HandlePositiveErrors(1);
         }
 
         private void AppendCycles(List<Edge> path)
@@ -171,23 +178,37 @@ namespace Hybrydyzacja
             {
                 throw new Exception();
             }
-            if (prefixVertex.InDegree == 0 && prefixVertex.OutDegree == 0)
+            if (prefixVertex != suffixVertex)
             {
-                if (!Vertices.Remove(prefixVertex))
+                if (prefixVertex.InDegree == 0 && prefixVertex.OutDegree == 0)
                 {
-                    throw new Exception();
+                    if (!Vertices.Remove(prefixVertex))
+                    {
+                        throw new Exception();
+                    }
+                }
+                if (suffixVertex.InDegree == 0 && suffixVertex.OutDegree == 0)
+                {
+                    if (!Vertices.Remove(suffixVertex))
+                    {
+                        throw new Exception();
+                    }
                 }
             }
-            if (suffixVertex.InDegree == 0 && suffixVertex.OutDegree == 0)
+            else
             {
-                if (!Vertices.Remove(prefixVertex))
+                if (prefixVertex.InDegree == 0 && prefixVertex.OutDegree == 0)
                 {
-                    throw new Exception();
+                    if (!Vertices.Remove(prefixVertex))
+                    {
+                        throw new Exception();
+                    }
                 }
             }
+           
         }
 
-        private void BuildGraph(List<string> words, int k)
+        private void BuildGraph(List<string> words)
         {
             Vertices = new List<Vertex>();
             foreach (var word in words)
@@ -208,37 +229,66 @@ namespace Hybrydyzacja
         {
             if (!_solutionExists)
             {
-
+                foreach (var word in _words)
+                {
+                    RemoveWord(word);
+                    var cycleOrPath = EulerCycleExists() || EulerPathExists();
+                    if (cycleOrPath)
+                    {
+                        Console.WriteLine("Jeśli słowo '{0}' nie było obecne w oryginalnej sekwencji (błąd pozytywny), to istnieje rozwiązanie:", word);
+                        FindEulerPath();
+                    }
+                    AddWord(word);
+                }
+            }
+            else
+            {
+                foreach (var word in _words)
+                {
+                    RemoveWord(word);
+                    var cycleOrPath = EulerCycleExists() || EulerPathExists();
+                    if (!cycleOrPath)
+                    {
+                        Console.WriteLine(
+                            "Jeśli słowo '{0}' nie było obecne w oryginalnej sekwencji (błąd pozytywny), to nie istnieje rozwiązanie.", word);
+                    }
+                    AddWord(word);
+                }
             }
         }
 
         private void HandleNegativeErrors(int errorsCount)
         {
-            var words = GenerateLackingWords();
-            foreach (var word in words)
+            var words = Generator.AllCombinations(k);
+            if (_solutionExists)
             {
-                AddWord(word);
-                // check something
-                RemoveWord(word);
-            }
-        }
-
-        private string[] GenerateLackingWords()
-        {
-            for (var i = 0; i < k; i++)
-            {
-                for (var j = 0; j < k; j++)
+                foreach (var word in words)
                 {
-                    for (var l = 0; l < k; l++)
+                    if (_words.Contains(word)) continue;
+                    AddWord(word);
+                    var cycleOrPath = EulerCycleExists() || EulerPathExists();
+                    if (!cycleOrPath)
                     {
-                        for (var m = 0; m < k; m++)
-                        {
-                            
-                        }
+                        Console.WriteLine("Jeśli słowo '{0}' było obecne w oryginalnej sekwencji (błąd negatywny), to nie istnieje rozwiązanie.", word);
                     }
+                    RemoveWord(word);
                 }
             }
-            return null;
+            else
+            {
+                foreach (var word in words)
+                {
+                    AddWord(word);
+                    var cycleOrPath = EulerCycleExists() || EulerPathExists();
+                    if (cycleOrPath)
+                    {
+                        Console.WriteLine("Jeśli słowo '{0}' było obecne w oryginalnej sekwencji (błąd negatywny), to istnieje rozwiązanie:", word);
+                        FindEulerPath();
+                    }
+                    RemoveWord(word);
+                }
+            }
+           
         }
 
         public void Print()

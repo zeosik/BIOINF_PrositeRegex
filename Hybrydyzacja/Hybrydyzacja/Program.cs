@@ -24,16 +24,10 @@ namespace Hybrydyzacja
 
         static void Main(string[] args)
         {
-            var list = Generator.GenerateSomeData(3, 17);
-            list.Sort();
-
-            foreach (var str in list)
-                Console.WriteLine(str);
-
-            var g = new Graph(list, 3);
+            var sample = Generator.GenerateSomeData(4, 12);
+            var g = new Graph(sample, 4);
             g.Print();
             g.FindEulerPath();
-
             Console.Read();
         }
     }
