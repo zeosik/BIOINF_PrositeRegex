@@ -24,11 +24,10 @@ namespace Hybrydyzacja
 
         static void Main(string[] args)
         {
-            var sample = Generator.CorruptedExample();
-            //var sample = Generator.GenerateSomeData(3, 8);
+            var sample = _sampleWords.ToList();// Generator.CorruptedExample();// Generator.GenerateSomeData(4, 12);
             var g = new Graph(sample, 3);
             g.Print();
-            g.FindEulerPath();
+            g.FindEulerPath(true);
             Console.Read();
         }
     }

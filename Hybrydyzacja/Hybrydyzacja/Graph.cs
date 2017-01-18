@@ -9,7 +9,7 @@ namespace Hybrydyzacja
     class Graph
     {
         private char[] _alphabet = {'A', 'C', 'G', 'T'};
-        private List<string> _words;
+        private List<string> _words = new List<string>();
         public List<Vertex> Vertices { get; set; }
         public Vertex StartVertex { get; set; }
         public Vertex EndVertex { get; set; }
@@ -21,7 +21,7 @@ namespace Hybrydyzacja
 
         public Graph(List<string> words, int k)
         {
-            _words = words;
+           // _words = words;
             this.k = k;
             BuildGraph(words);
         }
@@ -72,7 +72,7 @@ namespace Hybrydyzacja
             return true;
         }
 
-        public void FindEulerPath()
+        public void FindEulerPath(bool handleErrors)
         {
             var g = new Graph(_words, k);
             if (g.EulerCycleExists())
@@ -83,6 +83,11 @@ namespace Hybrydyzacja
             {
                 _solutionExists = false;
                 Console.WriteLine("No solution");
+                if (handleErrors)
+                {
+                    HandleNegativeErrors(1);
+                    HandlePositiveErrors(1);
+                }
                 return;
             }
             _solutionExists = true;
@@ -107,8 +112,11 @@ namespace Hybrydyzacja
                 Console.Write(edge.Value);
             }
             Console.WriteLine();
-            HandleNegativeErrors(1);
-            HandlePositiveErrors(1);
+            if (handleErrors)
+            {
+                HandleNegativeErrors(1);
+                HandlePositiveErrors(1);
+            }
         }
 
         private void AppendCycles(List<Edge> path)
@@ -161,6 +169,7 @@ namespace Hybrydyzacja
             prefixVertex.OutDegree++;
             suffixVertex.InDegree++;
             Edges++;
+            _words.Insert(0, word);
         }
 
         private void RemoveWord(string word)
@@ -170,10 +179,14 @@ namespace Hybrydyzacja
             var prefixVertex = Vertices.Single(x => x.Value == prefix);
             var suffixVertex = Vertices.Single(x => x.Value == suffix);
             var edgeValue = suffix[k - 2];
-            var edge = prefixVertex.Edges.Single(x => x.Value == edgeValue);
+            var edge = prefixVertex.Edges.First(x => x.Value == edgeValue);
             prefixVertex.OutDegree--;
             suffixVertex.InDegree--;
             Edges--;
+            if (!_words.Remove(word))
+            {
+                throw new Exception();
+            }
             if (!prefixVertex.Edges.Remove(edge))
             {
                 throw new Exception();
@@ -217,34 +230,28 @@ namespace Hybrydyzacja
             }
         }
 
-        private void HandleErrors(int errorsCount)
-        {
-            if (!_solutionExists)
-            {
-                
-            }
-        }
-
         private void HandlePositiveErrors(int errorsCount)
         {
             if (!_solutionExists)
             {
-                foreach (var word in _words)
+                for (var i = 0; i < _words.Count; i++)
                 {
+                    var word = _words[i];
                     RemoveWord(word);
                     var cycleOrPath = EulerCycleExists() || EulerPathExists();
                     if (cycleOrPath)
                     {
                         Console.WriteLine("Jeśli słowo '{0}' nie było obecne w oryginalnej sekwencji (błąd pozytywny), to istnieje rozwiązanie:", word);
-                        FindEulerPath();
+                        FindEulerPath(false);
                     }
                     AddWord(word);
                 }
             }
             else
             {
-                foreach (var word in _words)
+                for (var i = 0; i < _words.Count; i++)
                 {
+                    var word = _words[i];
                     RemoveWord(word);
                     var cycleOrPath = EulerCycleExists() || EulerPathExists();
                     if (!cycleOrPath)
@@ -283,7 +290,7 @@ namespace Hybrydyzacja
                     if (cycleOrPath)
                     {
                         Console.WriteLine("Jeśli słowo '{0}' było obecne w oryginalnej sekwencji (błąd negatywny), to istnieje rozwiązanie:", word);
-                        FindEulerPath();
+                        FindEulerPath(false);
                     }
                     RemoveWord(word);
                 }

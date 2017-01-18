@@ -10,7 +10,7 @@ namespace Hybrydyzacja
     {
         public static List<string> CorruptedExample()
         {
-            string[] exaple = {"TCA", "CAT", "ATG", "TGG", "GGT", "GTA", "CAG"};
+            string[] exaple = { "TCA", "CAT", "ATG", "TGG", "GGT", "GTA", "CAG" };
             return exaple.ToList();
         }
 
