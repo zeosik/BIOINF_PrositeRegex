@@ -12,21 +12,31 @@ namespace Hybrydyzacja
     {
         public static List<string> GenerateSomeData(int k, int lenght)
         {
-            string sequence = "";
-            char[] letters = {'A', 'C', 'G', 'T'};
+            char[] letters = { 'A', 'C', 'G', 'T' };
             var random = new Random();
+            bool sequenceNotvalid = true;
+            List<string> output = new List<string>();
+            string sequence = "";
 
-            for (int i = 0; i < lenght; i++)
-                sequence += letters[random.Next(0, 3)];
-
-            Console.WriteLine("Wylosowalem cos takiego: " + sequence);
-
-            var output = new List<string>();
-            for (int i = 0; i <= lenght - k; i++)
+            while (sequenceNotvalid)
             {
-                output.Add(sequence.Substring(i, k));
+                sequenceNotvalid = false;
+                sequence = "";
+                output = new List<string>();
+
+                for (int i = 0; i < lenght; i++)
+                    sequence += letters[random.Next(0, 3)];
+                
+                for (int i = 0; i <= lenght - k; i++)
+                {
+                    foreach (var str in output)
+                        if (sequence.Substring(i, k) == str)
+                            sequenceNotvalid = true;
+                    output.Add(sequence.Substring(i, k));
+                }
             }
 
+            Console.WriteLine("Wylosowalem cos takiego: " + sequence);
             return output;
         }
     }

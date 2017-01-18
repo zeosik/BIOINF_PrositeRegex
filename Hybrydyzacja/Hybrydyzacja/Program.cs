@@ -24,12 +24,11 @@ namespace Hybrydyzacja
 
         static void Main(string[] args)
         {
-            var list = Generator.GenerateSomeData(3, 7);
+            var list = Generator.GenerateSomeData(3, 17);
+            list.Sort();
 
             foreach (var str in list)
-            {
                 Console.WriteLine(str);
-            }
 
             var g = new Graph(list, 3);
             g.Print();
