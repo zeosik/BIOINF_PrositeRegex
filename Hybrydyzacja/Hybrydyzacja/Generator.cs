@@ -39,6 +39,20 @@ namespace Hybrydyzacja
             Console.WriteLine("Wylosowalem cos takiego: " + sequence);
             return output;
         }
+
+        public static List<string> AllCombinations(int k)
+        {
+            string[] letters = { "A", "C", "G", "T" };
+            if (k == 1)
+                return letters.ToList();
+            
+            List<string> output = new List<string>();
+            foreach (var str in AllCombinations(k - 1))
+                for (int i=0; i<4; i++)
+                    output.Add(str + letters[i]);
+
+            return output;
+        }
     }
 
 }
